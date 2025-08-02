@@ -1,0 +1,146 @@
+.dashboard-container {
+  padding: 24px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: calc(100vh - 64px);
+}
+
+.stats-card {
+  transition: all 0.3s ease;
+  border-radius: 16px !important;
+  overflow: hidden;
+  position: relative;
+}
+
+.stats-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+.stats-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.ticket-card {
+  transition: all 0.3s ease;
+  border-radius: 12px !important;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.ticket-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-color: rgba(25, 118, 210, 0.3);
+}
+
+.quick-action-card {
+  transition: all 0.3s ease;
+  border-radius: 12px !important;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.quick-action-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+.quick-action-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.priority-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: all 0.3s ease;
+}
+
+.priority-bar:hover {
+  height: 10px;
+}
+
+.dashboard-title {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.dashboard-subtitle {
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 32px;
+}
+
+.recent-tickets-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+
+  .stats-card {
+    margin-bottom: 16px;
+  }
+
+  .ticket-card {
+    margin-bottom: 12px;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-container > * {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.dashboard-container > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.dashboard-container > *:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.dashboard-container > *:nth-child(4) {
+  animation-delay: 0.3s;
+}

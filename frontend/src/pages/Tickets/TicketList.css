@@ -1,0 +1,170 @@
+.ticket-list-container {
+    padding: 24px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: calc(100vh - 64px);
+  }
+  
+  .ticket-card {
+    transition: all 0.3s ease;
+    border-radius: 12px !important;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+  }
+  
+  .ticket-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-color: rgba(25, 118, 210, 0.3);
+  }
+  
+  .filter-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .ticket-item {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .ticket-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .status-chip {
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem !important;
+  }
+  
+  .priority-chip {
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem !important;
+  }
+  
+  .vote-button {
+    transition: all 0.2s ease;
+  }
+  
+  .vote-button:hover {
+    transform: scale(1.1);
+  }
+  
+  .search-field .MuiOutlinedInput-root {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .search-field .MuiOutlinedInput-root:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-field .MuiOutlinedInput-root.Mui-focused {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  
+  .filter-select .MuiOutlinedInput-root {
+    border-radius: 12px;
+  }
+  
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+  }
+  
+  .pagination-container .MuiPaginationItem-root {
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 64px 24px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .ticket-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.875rem;
+  }
+  
+  .ticket-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  
+  .vote-section {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  @media (max-width: 768px) {
+    .ticket-list-container {
+      padding: 16px;
+    }
+  
+    .filter-card .MuiGrid-container {
+      gap: 16px;
+    }
+  
+    .ticket-item {
+      margin-bottom: 12px;
+    }
+  
+    .ticket-actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .ticket-item {
+    animation: fadeInUp 0.5s ease-out;
+  }
+  
+  .ticket-item:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .ticket-item:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .ticket-item:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  .ticket-item:nth-child(4) {
+    animation-delay: 0.4s;
+  }
+  .ticket-item:nth-child(5) {
+    animation-delay: 0.5s;
+  }
+  

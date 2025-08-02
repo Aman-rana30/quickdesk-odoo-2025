@@ -1,0 +1,280 @@
+.profile-container {
+    padding: 24px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: calc(100vh - 64px);
+  }
+  
+  .profile-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+  }
+  
+  .user-avatar {
+    width: 100px !important;
+    height: 100px !important;
+    font-size: 2rem !important;
+    margin: 0 auto 16px auto;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+  }
+  
+  .user-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+  }
+  
+  .profile-field .MuiOutlinedInput-root {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .profile-field .MuiOutlinedInput-root:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-field .MuiOutlinedInput-root.Mui-focused {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  
+  .notification-switch {
+    padding: 16px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    margin-bottom: 8px;
+  }
+  
+  .notification-switch:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  .role-chip {
+    font-weight: bold !important;
+    text-transform: uppercase;
+    font-size: 0.75rem !important;
+    padding: 8px 16px;
+  }
+  
+  .status-chip {
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem !important;
+  }
+  
+  .save-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: bold;
+    text-transform: none;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+  }
+  
+  .save-button:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    transform: translateY(-2px);
+  }
+  
+  .save-button:disabled {
+    background: #ccc;
+    box-shadow: none;
+    transform: none;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .info-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+  
+  .info-label {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.875rem;
+    margin-bottom: 4px;
+  }
+  
+  .info-value {
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.87);
+  }
+  
+  .security-tips {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(33, 150, 243, 0.2);
+  }
+  
+  .section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .section-icon {
+    margin-right: 12px;
+    color: #1976d2;
+  }
+  
+  .edit-mode-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .notification-item {
+    background: rgba(248, 249, 250, 0.8);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .notification-item:hover {
+    background: rgba(248, 249, 250, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .profile-container {
+      padding: 16px;
+    }
+  
+    .profile-card {
+      margin-bottom: 16px;
+      padding: 16px !important;
+    }
+  
+    .user-avatar {
+      width: 80px !important;
+      height: 80px !important;
+      font-size: 1.5rem !important;
+    }
+  
+    .edit-mode-actions {
+      flex-direction: column;
+      gap: 12px;
+    }
+  
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .profile-card {
+    animation: fadeInUp 0.6s ease-out;
+  }
+  
+  .profile-card:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  
+  .profile-card:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .profile-card:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  
+  /* Form validation styles */
+  .error-field .MuiOutlinedInput-root {
+    border-color: #d32f2f;
+  }
+  
+  .error-field .MuiOutlinedInput-root:hover {
+    border-color: #d32f2f;
+  }
+  
+  .success-field .MuiOutlinedInput-root {
+    border-color: #2e7d32;
+  }
+  
+  /* Loading states */
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    z-index: 10;
+  }
+  
+  .profile-form {
+    position: relative;
+  }
+  
+  /* Switch customization */
+  .MuiSwitch-root {
+    width: 58px;
+    height: 38px;
+    padding: 7px;
+  }
+  
+  .MuiSwitch-switchBase {
+    margin: 1px;
+    padding: 0;
+    transform: translateX(6px);
+  }
+  
+  .MuiSwitch-switchBase.Mui-checked {
+    color: #fff;
+    transform: translateX(22px);
+  }
+  
+  .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    opacity: 1;
+    border: 0;
+  }
+  
+  .MuiSwitch-thumb {
+    box-sizing: border-box;
+    width: 22px;
+    height: 22px;
+  }
+  
+  .MuiSwitch-track {
+    border-radius: 26px;
+    border: 1px solid #e0e0e0;
+    background-color: #fafafa;
+    opacity: 1;
+    transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  }
+  

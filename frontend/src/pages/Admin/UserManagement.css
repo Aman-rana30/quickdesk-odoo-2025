@@ -1,0 +1,223 @@
+.user-management-container {
+    padding: 24px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: calc(100vh - 64px);
+  }
+  
+  .users-table-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filter-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 24px;
+  }
+  
+  .user-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 1rem !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  }
+  
+  .role-chip {
+    font-weight: bold !important;
+    text-transform: uppercase;
+    font-size: 0.75rem !important;
+  }
+  
+  .status-chip {
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem !important;
+  }
+  
+  .table-row {
+    transition: background-color 0.2s ease;
+  }
+  
+  .table-row:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  .search-field .MuiOutlinedInput-root {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .search-field .MuiOutlinedInput-root:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-field .MuiOutlinedInput-root.Mui-focused {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  
+  .filter-select .MuiOutlinedInput-root {
+    border-radius: 12px;
+  }
+  
+  .action-button {
+    transition: all 0.2s ease;
+  }
+  
+  .action-button:hover {
+    transform: scale(1.1);
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  
+  .edit-dialog .MuiDialog-paper {
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+  }
+  
+  .user-info-section {
+    background: rgba(248, 249, 250, 0.8);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .table-header {
+    background-color: rgba(0, 0, 0, 0.02);
+    font-weight: bold;
+  }
+  
+  .table-header .MuiTableCell-root {
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.87);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .pagination-container {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(248, 249, 250, 0.5);
+  }
+  
+  @media (max-width: 768px) {
+    .user-management-container {
+      padding: 16px;
+    }
+  
+    .filter-card {
+      margin-bottom: 16px;
+    }
+  
+    .search-field {
+      min-width: 100% !important;
+      margin-bottom: 16px;
+    }
+  
+    .table-container {
+      overflow-x: auto;
+    }
+  
+    .user-info-section {
+      padding: 12px;
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .users-table-card,
+  .filter-card {
+    animation: fadeInUp 0.6s ease-out;
+  }
+  
+  .filter-card {
+    animation-delay: 0.1s;
+  }
+  
+  .users-table-card {
+    animation-delay: 0.2s;
+  }
+  
+  /* Loading states */
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 64px 0;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 64px 24px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  /* Menu styles */
+  .action-menu .MuiPaper-root {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .action-menu .MuiMenuItem-root {
+    padding: 12px 16px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .action-menu .MuiMenuItem-root:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  
+  /* Role and status indicators */
+  .role-admin {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    color: white;
+  }
+  
+  .role-agent {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    color: white;
+  }
+  
+  .role-user {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    color: white;
+  }
+  
+  .status-active {
+    color: #2e7d32;
+    border-color: #2e7d32;
+  }
+  
+  .status-inactive {
+    color: #d32f2f;
+    border-color: #d32f2f;
+  }
+  
+  /* Responsive table */
+  @media (max-width: 1024px) {
+    .hide-mobile {
+      display: none;
+    }
+  }
+  
+  /* Hover effects */
+  .table-row:hover .action-button {
+    opacity: 1;
+  }
+  
+  .action-button {
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  
