@@ -1,25 +1,21 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import { AuthProvider } from "./contexts/AuthContext";
-import { NotificationProvider } from "./contexts/NotificationContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Layout from "./components/Layout/Layout";
-import Login from "./pages/Auth/Login";
-import Register from "./pages/Auth/Register";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import TicketList from "./pages/Tickets/TicketList";
-import TicketDetail from "./pages/Tickets/TicketDetail";
-import CreateTicket from "./pages/Tickets/CreateTicket";
-import Profile from "./pages/Profile/Profile";
-import UserManagement from "./pages/Admin/UserManagement";
-import CategoryManagement from "./pages/Admin/CategoryManagement";
-import "./App.css";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { ThemeProvider, createTheme } from "@mui/material/styles"
+import CssBaseline from "@mui/material/CssBaseline"
+import { AuthProvider } from "./contexts/AuthContext"
+import { NotificationProvider } from "./contexts/NotificationContext"
+import ProtectedRoute from "./components/ProtectedRoute"
+import Layout from "./components/Layout/Layout"
+import Login from "./pages/Auth/Login"
+import Register from "./pages/Auth/Register"
+import Dashboard from "./pages/Dashboard/Dashboard"
+import TicketList from "./pages/Tickets/TicketList"
+import TicketDetail from "./pages/Tickets/TicketDetail"
+import CreateTicket from "./pages/Tickets/CreateTicket"
+import Profile from "./pages/Profile/Profile"
+import UserManagement from "./pages/Admin/UserManagement"
+import CategoryManagement from "./pages/Admin/CategoryManagement"
+import Settings from "./pages/Settings/Settings"
+import "./App.css"
 
 const theme = createTheme({
   palette: {
@@ -65,7 +61,7 @@ const theme = createTheme({
       },
     },
   },
-});
+})
 
 function App() {
   return (
@@ -92,6 +88,7 @@ function App() {
                   <Route path="tickets/new" element={<CreateTicket />} />
                   <Route path="tickets/:id" element={<TicketDetail />} />
                   <Route path="profile" element={<Profile />} />
+                  <Route path="settings" element={<Settings />} />
                   <Route
                     path="admin/users"
                     element={
@@ -115,7 +112,7 @@ function App() {
         </NotificationProvider>
       </AuthProvider>
     </ThemeProvider>
-  );
+  )
 }
 
-export default App;
+export default App

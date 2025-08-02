@@ -6,10 +6,16 @@ const User = require("../models/User")
 const Category = require("../models/Category")
 const Notification = require("../models/Notification")
 const { auth, authorize } = require("../middleware/auth")
+const fs = require("fs")
 
 const router = express.Router()
 
 // Configure multer for file uploads
+const uploadDir = "uploads"
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true })
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/")
@@ -41,14 +47,15 @@ router.post("/", auth, upload.array("attachments", 5), async (req, res) => {
   try {
     const { subject, description, category, priority } = req.body
 
-    const attachments = req.files
-      ? req.files.map((file) => ({
-          filename: file.filename,
-          originalName: file.originalname,
-          path: file.path,
-          size: file.size,
-        }))
-      : []
+    const attachments =
+      req.files && req.files.length > 0
+        ? req.files.map((file) => ({
+            filename: file.filename,
+            originalName: file.originalname,
+            path: file.path,
+            size: file.size,
+          }))
+        : []
 
     const ticket = new Ticket({
       subject,
@@ -64,22 +71,25 @@ router.post("/", auth, upload.array("attachments", 5), async (req, res) => {
 
     // Create notification for agents
     const agents = await User.find({ role: { $in: ["agent", "admin"] } })
-    const notifications = agents.map((agent) => ({
-      recipient: agent._id,
-      sender: req.user._id,
-      type: "ticket_created",
-      title: "New Ticket Created",
-      message: `New ticket "${subject}" has been created`,
-      relatedTicket: ticket._id,
-    }))
+    if (agents.length > 0) {
+      const notifications = agents.map((agent) => ({
+        recipient: agent._id,
+        sender: req.user._id,
+        type: "ticket_created",
+        title: "New Ticket Created",
+        message: `New ticket "${subject}" has been created`,
+        relatedTicket: ticket._id,
+      }))
 
-    await Notification.insertMany(notifications)
+      await Notification.insertMany(notifications)
+    }
 
     res.status(201).json({
       message: "Ticket created successfully",
       ticket,
     })
   } catch (error) {
+    console.error("Ticket creation error:", error)
     res.status(500).json({ message: "Server error", error: error.message })
   }
 })
