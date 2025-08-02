@@ -375,6 +375,6 @@ If you encounter any issues or have questions:
 
 ---
 
-**Made with ❤️ by [Your Name]**
+**Made with ❤️ by [Hacathon Hackers]**
 
-For more information, visit our [documentation](https://github.com/yourusername/quickdesk-helpdesk/wiki) or contact us at support@quickdesk.com
+
