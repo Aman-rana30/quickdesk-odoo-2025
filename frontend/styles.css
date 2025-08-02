@@ -1,0 +1,98 @@
+/*
+  styles.css
+  QuickDesk Help Desk Solution
+  Responsive, simple styles for SPA
+*/
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f7f8fa;
+  color: #222;
+}
+nav#navbar {
+  background: #263159;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  justify-content: space-between;
+}
+nav .logo {
+  font-weight: bold;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+}
+#nav-links a, #nav-links button {
+  color: #fff;
+  background: none;
+  border: none;
+  margin-left: 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+#nav-links a.active {
+  border-bottom: 2px solid #fff;
+}
+main#app {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(38,49,89,0.06);
+  padding: 2rem 1.5rem;
+  min-height: 400px;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+input, select, textarea {
+  padding: 0.6rem;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+button {
+  background: #263159;
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:hover {
+  background: #435585;
+}
+.ticket-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+.ticket-list th, .ticket-list td {
+  padding: 0.7rem 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+.ticket-list th {
+  background: #f0f2f7;
+  text-align: left;
+}
+.status-open { color: #008000; }
+.status-in-progress { color: #e6b800; }
+.status-resolved { color: #0074d9; }
+.status-closed { color: #b22222; }
+@media (max-width: 600px) {
+  main#app {
+    padding: 1rem 0.5rem;
+  }
+  nav#navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ticket-list, .ticket-list th, .ticket-list td {
+    font-size: 0.95rem;
+  }
+}
