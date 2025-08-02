@@ -1,27 +1,35 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ... existing code ...
 
-# dependencies
-/node_modules
+# Monorepo subfolders
+quick-odoo/backend/node_modules/
+quick-odoo/frontend/node_modules/
+quick-odoo/backend/build/
+quick-odoo/frontend/build/
+quick-odoo/backend/.env*
+quick-odoo/frontend/.env*
+quick-odoo/backend/.vercel/
+quick-odoo/frontend/.vercel/
+quick-odoo/backend/.next/
+quick-odoo/frontend/.next/
+quick-odoo/backend/out/
+quick-odoo/frontend/out/
+quick-odoo/backend/npm-debug.log*
+quick-odoo/frontend/npm-debug.log*
+quick-odoo/backend/yarn-debug.log*
+quick-odoo/frontend/yarn-debug.log*
+quick-odoo/backend/yarn-error.log*
+quick-odoo/frontend/yarn-error.log*
+quick-odoo/backend/.pnpm-debug.log*
+quick-odoo/frontend/.pnpm-debug.log*
 
-# next.js
-/.next/
-/out/
+# Vite build output
+quick-odoo/frontend/dist/
 
-# production
-/build
+# Editor files
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Uploaded files
+quick-odoo/backend/uploads/

@@ -6,41 +6,26 @@ import {
   Card,
   CardContent,
   Typography,
-  TextField,
-  Button,
-  Grid,
-  FormControlLabel,
   Switch,
+  FormControlLabel,
+  Button,
   Divider,
+  Grid,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Alert,
-  CircularProgress,
-  Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material"
-import {
-  Notifications,
-  Security,
-  Palette,
-  Language,
-  Save,
-  RestartAlt,
-  Warning,
-  Info,
-  CheckCircle,
-} from "@mui/icons-material"
+import { Notifications, Palette, Security, Settings as SettingsIcon, AccountCircle, Save } from "@mui/icons-material"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNotification } from "../../contexts/NotificationContext"
+import api from "../../services/api"
 import "./Settings.css"
 
 const Settings = () => {
-  const { user, updateProfile } = useAuth()
+  const { user, updateUser } = useAuth()
   const { showSnackbar } = useNotification()
 
   const [settings, setSettings] = useState({
@@ -53,40 +38,45 @@ const Settings = () => {
     },
     appearance: {
       theme: "light",
-      compactMode: false,
-      showAvatars: true,
+      language: "en",
+      timezone: "UTC",
     },
     privacy: {
-      profileVisibility: "public",
-      activityTracking: true,
+      profileVisible: true,
+      showEmail: false,
+      allowMessages: true,
     },
-    language: "en",
-    timezone: "UTC",
+    system: {
+      autoAssign: false,
+      defaultPriority: "medium",
+      ticketsPerPage: 10,
+    },
   })
 
   const [loading, setLoading] = useState(false)
-  const [resetDialog, setResetDialog] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
 
   useEffect(() => {
-    if (user?.notifications) {
-      setSettings((prev) => ({
-        ...prev,
-        notifications: {
-          ...prev.notifications,
-          email: user.notifications.email,
-          push: user.notifications.push,
-        },
-      }))
-    }
-  }, [user])
+    fetchUserSettings()
+  }, [])
 
-  const handleSettingChange = (category, setting, value) => {
+  const fetchUserSettings = async () => {
+    try {
+      const response = await api.get("/users/settings")
+      if (response.data.settings) {
+        setSettings(response.data.settings)
+      }
+    } catch (error) {
+      console.error("Failed to fetch settings:", error)
+    }
+  }
+
+  const handleSettingChange = (category, field, value) => {
     setSettings((prev) => ({
       ...prev,
       [category]: {
         ...prev[category],
-        [setting]: value,
+        [field]: value,
       },
     }))
     setHasChanges(true)
@@ -95,21 +85,9 @@ const Settings = () => {
   const handleSaveSettings = async () => {
     try {
       setLoading(true)
-
-      // Update profile with notification settings
-      const result = await updateProfile({
-        notifications: {
-          email: settings.notifications.email,
-          push: settings.notifications.push,
-        },
-      })
-
-      if (result.success) {
-        setHasChanges(false)
-        showSnackbar("Settings saved successfully!", "success")
-      } else {
-        showSnackbar(result.message || "Failed to save settings", "error")
-      }
+      await api.put("/users/settings", { settings })
+      showSnackbar("Settings saved successfully!", "success")
+      setHasChanges(false)
     } catch (error) {
       showSnackbar("Failed to save settings", "error")
     } finally {
@@ -117,70 +95,50 @@ const Settings = () => {
     }
   }
 
-  const handleResetSettings = () => {
-    setSettings({
-      notifications: {
-        email: true,
-        push: true,
-        ticketUpdates: true,
-        commentReplies: true,
-        statusChanges: true,
-      },
-      appearance: {
-        theme: "light",
-        compactMode: false,
-        showAvatars: true,
-      },
-      privacy: {
-        profileVisibility: "public",
-        activityTracking: true,
-      },
-      language: "en",
-      timezone: "UTC",
-    })
-    setHasChanges(true)
-    setResetDialog(false)
-    showSnackbar("Settings reset to defaults", "info")
-  }
-
   return (
     <div className="settings-container">
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: "bold", color: "primary.main" }}>
-          Settings
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Customize your QuickDesk experience
-        </Typography>
-      </Box>
-
-      {hasChanges && (
-        <Alert
-          severity="info"
-          sx={{ mb: 3, borderRadius: 2 }}
-          action={
-            <Button color="inherit" size="small" onClick={handleSaveSettings} disabled={loading}>
-              {loading ? <CircularProgress size={16} /> : "Save Changes"}
-            </Button>
-          }
+      {/* Header */}
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+        <Box>
+          <Typography variant="h4" component="h1" sx={{ fontWeight: "bold", color: "primary.main" }}>
+            Settings
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Customize your QuickDesk experience
+          </Typography>
+        </Box>
+        <Button
+          variant="contained"
+          startIcon={<Save />}
+          onClick={handleSaveSettings}
+          disabled={!hasChanges || loading}
+          sx={{
+            borderRadius: 2,
+            px: 3,
+            py: 1.5,
+            background: hasChanges ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" : undefined,
+            "&:hover": {
+              background: hasChanges ? "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)" : undefined,
+            },
+          }}
         >
-          You have unsaved changes
-        </Alert>
-      )}
+          {loading ? "Saving..." : "Save Changes"}
+        </Button>
+      </Box>
 
       <Grid container spacing={3}>
         {/* Notification Settings */}
         <Grid item xs={12} lg={6}>
-          <Card sx={{ borderRadius: 3, mb: 3 }}>
-            <CardContent>
-              <Box display="flex" alignItems="center" mb={3}>
-                <Notifications sx={{ mr: 2, color: "primary.main" }} />
+          <Card sx={{ borderRadius: 3, height: "fit-content" }}>
+            <CardContent sx={{ p: 4 }}>
+              <Box display="flex" alignItems="center" gap={2} mb={3}>
+                <Notifications color="primary" />
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                   Notification Preferences
                 </Typography>
               </Box>
 
-              <Box>
+              <Box display="flex" flexDirection="column" gap={2}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -188,18 +146,11 @@ const Settings = () => {
                       onChange={(e) => handleSettingChange("notifications", "email", e.target.checked)}
                     />
                   }
-                  label={
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Email Notifications
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Receive email updates for important events
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ mb: 2, alignItems: "flex-start" }}
+                  label="Email Notifications"
                 />
+                <Typography variant="body2" color="text.secondary" sx={{ ml: 4, mt: -1 }}>
+                  Receive email updates for ticket activities
+                </Typography>
 
                 <FormControlLabel
                   control={
@@ -208,18 +159,17 @@ const Settings = () => {
                       onChange={(e) => handleSettingChange("notifications", "push", e.target.checked)}
                     />
                   }
-                  label={
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Browser Notifications
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Show desktop notifications for real-time updates
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ mb: 2, alignItems: "flex-start" }}
+                  label="Push Notifications"
                 />
+                <Typography variant="body2" color="text.secondary" sx={{ ml: 4, mt: -1 }}>
+                  Get browser notifications for important updates
+                </Typography>
+
+                <Divider sx={{ my: 2 }} />
+
+                <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
+                  Notification Types
+                </Typography>
 
                 <FormControlLabel
                   control={
@@ -228,17 +178,7 @@ const Settings = () => {
                       onChange={(e) => handleSettingChange("notifications", "ticketUpdates", e.target.checked)}
                     />
                   }
-                  label={
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Ticket Updates
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Get notified when tickets are updated
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ mb: 2, alignItems: "flex-start" }}
+                  label="Ticket Updates"
                 />
 
                 <FormControlLabel
@@ -248,17 +188,7 @@ const Settings = () => {
                       onChange={(e) => handleSettingChange("notifications", "commentReplies", e.target.checked)}
                     />
                   }
-                  label={
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Comment Replies
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Notify when someone replies to your comments
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ mb: 2, alignItems: "flex-start" }}
+                  label="Comment Replies"
                 />
 
                 <FormControlLabel
@@ -268,17 +198,7 @@ const Settings = () => {
                       onChange={(e) => handleSettingChange("notifications", "statusChanges", e.target.checked)}
                     />
                   }
-                  label={
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Status Changes
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Get notified when ticket status changes
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ alignItems: "flex-start" }}
+                  label="Status Changes"
                 />
               </Box>
             </CardContent>
@@ -287,55 +207,60 @@ const Settings = () => {
 
         {/* Appearance Settings */}
         <Grid item xs={12} lg={6}>
-          <Card sx={{ borderRadius: 3, mb: 3 }}>
-            <CardContent>
-              <Box display="flex" alignItems="center" mb={3}>
-                <Palette sx={{ mr: 2, color: "primary.main" }} />
+          <Card sx={{ borderRadius: 3, height: "fit-content" }}>
+            <CardContent sx={{ p: 4 }}>
+              <Box display="flex" alignItems="center" gap={2} mb={3}>
+                <Palette color="primary" />
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                   Appearance
                 </Typography>
               </Box>
 
-              <Box>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings.appearance.compactMode}
-                      onChange={(e) => handleSettingChange("appearance", "compactMode", e.target.checked)}
-                    />
-                  }
-                  label={
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Compact Mode
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Reduce spacing for more content on screen
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ mb: 2, alignItems: "flex-start" }}
-                />
+              <Box display="flex" flexDirection="column" gap={3}>
+                <FormControl fullWidth>
+                  <InputLabel>Theme</InputLabel>
+                  <Select
+                    value={settings.appearance.theme}
+                    label="Theme"
+                    onChange={(e) => handleSettingChange("appearance", "theme", e.target.value)}
+                    sx={{ borderRadius: 2 }}
+                  >
+                    <MenuItem value="light">Light</MenuItem>
+                    <MenuItem value="dark">Dark</MenuItem>
+                    <MenuItem value="auto">Auto (System)</MenuItem>
+                  </Select>
+                </FormControl>
 
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings.appearance.showAvatars}
-                      onChange={(e) => handleSettingChange("appearance", "showAvatars", e.target.checked)}
-                    />
-                  }
-                  label={
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Show Avatars
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Display user avatars in comments and lists
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ alignItems: "flex-start" }}
-                />
+                <FormControl fullWidth>
+                  <InputLabel>Language</InputLabel>
+                  <Select
+                    value={settings.appearance.language}
+                    label="Language"
+                    onChange={(e) => handleSettingChange("appearance", "language", e.target.value)}
+                    sx={{ borderRadius: 2 }}
+                  >
+                    <MenuItem value="en">English</MenuItem>
+                    <MenuItem value="es">Spanish</MenuItem>
+                    <MenuItem value="fr">French</MenuItem>
+                    <MenuItem value="de">German</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <FormControl fullWidth>
+                  <InputLabel>Timezone</InputLabel>
+                  <Select
+                    value={settings.appearance.timezone}
+                    label="Timezone"
+                    onChange={(e) => handleSettingChange("appearance", "timezone", e.target.value)}
+                    sx={{ borderRadius: 2 }}
+                  >
+                    <MenuItem value="UTC">UTC</MenuItem>
+                    <MenuItem value="America/New_York">Eastern Time</MenuItem>
+                    <MenuItem value="America/Chicago">Central Time</MenuItem>
+                    <MenuItem value="America/Denver">Mountain Time</MenuItem>
+                    <MenuItem value="America/Los_Angeles">Pacific Time</MenuItem>
+                  </Select>
+                </FormControl>
               </Box>
             </CardContent>
           </Card>
@@ -343,35 +268,54 @@ const Settings = () => {
 
         {/* Privacy Settings */}
         <Grid item xs={12} lg={6}>
-          <Card sx={{ borderRadius: 3, mb: 3 }}>
-            <CardContent>
-              <Box display="flex" alignItems="center" mb={3}>
-                <Security sx={{ mr: 2, color: "primary.main" }} />
+          <Card sx={{ borderRadius: 3, height: "fit-content" }}>
+            <CardContent sx={{ p: 4 }}>
+              <Box display="flex" alignItems="center" gap={2} mb={3}>
+                <Security color="primary" />
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                   Privacy & Security
                 </Typography>
               </Box>
 
-              <Box>
+              <Box display="flex" flexDirection="column" gap={2}>
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={settings.privacy.activityTracking}
-                      onChange={(e) => handleSettingChange("privacy", "activityTracking", e.target.checked)}
+                      checked={settings.privacy.profileVisible}
+                      onChange={(e) => handleSettingChange("privacy", "profileVisible", e.target.checked)}
                     />
                   }
-                  label={
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Activity Tracking
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Allow tracking of your activity for analytics
-                      </Typography>
-                    </Box>
-                  }
-                  sx={{ alignItems: "flex-start" }}
+                  label="Profile Visible to Others"
                 />
+                <Typography variant="body2" color="text.secondary" sx={{ ml: 4, mt: -1 }}>
+                  Allow other users to see your profile information
+                </Typography>
+
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={settings.privacy.showEmail}
+                      onChange={(e) => handleSettingChange("privacy", "showEmail", e.target.checked)}
+                    />
+                  }
+                  label="Show Email Address"
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ ml: 4, mt: -1 }}>
+                  Display your email address in your profile
+                </Typography>
+
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={settings.privacy.allowMessages}
+                      onChange={(e) => handleSettingChange("privacy", "allowMessages", e.target.checked)}
+                    />
+                  }
+                  label="Allow Direct Messages"
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ ml: 4, mt: -1 }}>
+                  Let other users send you direct messages
+                </Typography>
               </Box>
             </CardContent>
           </Card>
@@ -379,49 +323,57 @@ const Settings = () => {
 
         {/* System Settings */}
         <Grid item xs={12} lg={6}>
-          <Card sx={{ borderRadius: 3, mb: 3 }}>
-            <CardContent>
-              <Box display="flex" alignItems="center" mb={3}>
-                <Language sx={{ mr: 2, color: "primary.main" }} />
+          <Card sx={{ borderRadius: 3, height: "fit-content" }}>
+            <CardContent sx={{ p: 4 }}>
+              <Box display="flex" alignItems="center" gap={2} mb={3}>
+                <SettingsIcon color="primary" />
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                   System Preferences
                 </Typography>
               </Box>
 
-              <Box>
-                <TextField
-                  fullWidth
-                  select
-                  label="Language"
-                  value={settings.language}
-                  onChange={(e) => handleSettingChange("", "language", e.target.value)}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  sx={{ mb: 2 }}
-                >
-                  <option value="en">English</option>
-                  <option value="es">Spanish</option>
-                  <option value="fr">French</option>
-                  <option value="de">German</option>
-                </TextField>
+              <Box display="flex" flexDirection="column" gap={3}>
+                {user?.role !== "user" && (
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={settings.system.autoAssign}
+                        onChange={(e) => handleSettingChange("system", "autoAssign", e.target.checked)}
+                      />
+                    }
+                    label="Auto-assign Tickets"
+                  />
+                )}
 
-                <TextField
-                  fullWidth
-                  select
-                  label="Timezone"
-                  value={settings.timezone}
-                  onChange={(e) => handleSettingChange("", "timezone", e.target.value)}
-                  SelectProps={{
-                    native: true,
-                  }}
-                >
-                  <option value="UTC">UTC</option>
-                  <option value="America/New_York">Eastern Time</option>
-                  <option value="America/Chicago">Central Time</option>
-                  <option value="America/Denver">Mountain Time</option>
-                  <option value="America/Los_Angeles">Pacific Time</option>
-                </TextField>
+                <FormControl fullWidth>
+                  <InputLabel>Default Priority</InputLabel>
+                  <Select
+                    value={settings.system.defaultPriority}
+                    label="Default Priority"
+                    onChange={(e) => handleSettingChange("system", "defaultPriority", e.target.value)}
+                    sx={{ borderRadius: 2 }}
+                  >
+                    <MenuItem value="low">Low</MenuItem>
+                    <MenuItem value="medium">Medium</MenuItem>
+                    <MenuItem value="high">High</MenuItem>
+                    <MenuItem value="urgent">Urgent</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <FormControl fullWidth>
+                  <InputLabel>Tickets Per Page</InputLabel>
+                  <Select
+                    value={settings.system.ticketsPerPage}
+                    label="Tickets Per Page"
+                    onChange={(e) => handleSettingChange("system", "ticketsPerPage", e.target.value)}
+                    sx={{ borderRadius: 2 }}
+                  >
+                    <MenuItem value={5}>5</MenuItem>
+                    <MenuItem value={10}>10</MenuItem>
+                    <MenuItem value={25}>25</MenuItem>
+                    <MenuItem value={50}>50</MenuItem>
+                  </Select>
+                </FormControl>
               </Box>
             </CardContent>
           </Card>
@@ -430,101 +382,76 @@ const Settings = () => {
         {/* Account Information */}
         <Grid item xs={12}>
           <Card sx={{ borderRadius: 3 }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
-                Account Information
-              </Typography>
-              <Divider sx={{ mb: 3 }} />
+            <CardContent sx={{ p: 4 }}>
+              <Box display="flex" alignItems="center" gap={2} mb={3}>
+                <AccountCircle color="primary" />
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  Account Information
+                </Typography>
+              </Box>
 
               <Grid container spacing={3}>
-                <Grid item xs={12} md={4}>
-                  <Paper sx={{ p: 2, textAlign: "center", borderRadius: 2 }}>
-                    <CheckCircle sx={{ fontSize: 40, color: "success.main", mb: 1 }} />
-                    <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                      Account Status
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Active
-                    </Typography>
-                  </Paper>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Full Name"
+                    value={user?.name || ""}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                      },
+                    }}
+                  />
                 </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <Paper sx={{ p: 2, textAlign: "center", borderRadius: 2 }}>
-                    <Info sx={{ fontSize: 40, color: "info.main", mb: 1 }} />
-                    <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                      Member Since
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}
-                    </Typography>
-                  </Paper>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Email Address"
+                    value={user?.email || ""}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                      },
+                    }}
+                  />
                 </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <Paper sx={{ p: 2, textAlign: "center", borderRadius: 2 }}>
-                    <Security sx={{ fontSize: 40, color: "warning.main", mb: 1 }} />
-                    <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                      Security Level
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Standard
-                    </Typography>
-                  </Paper>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Role"
+                    value={user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1) || ""}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                      },
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Member Since"
+                    value={user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : ""}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                      },
+                    }}
+                  />
                 </Grid>
               </Grid>
+
+              <Alert severity="info" sx={{ mt: 3 }}>
+                To update your account information, please contact your system administrator.
+              </Alert>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
-
-      {/* Action Buttons */}
-      <Box display="flex" justifyContent="space-between" mt={4}>
-        <Button
-          variant="outlined"
-          startIcon={<RestartAlt />}
-          onClick={() => setResetDialog(true)}
-          sx={{ borderRadius: 2 }}
-        >
-          Reset to Defaults
-        </Button>
-
-        <Button
-          variant="contained"
-          startIcon={loading ? <CircularProgress size={20} /> : <Save />}
-          onClick={handleSaveSettings}
-          disabled={!hasChanges || loading}
-          sx={{
-            borderRadius: 2,
-            px: 4,
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            "&:hover": {
-              background: "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)",
-            },
-          }}
-        >
-          {loading ? "Saving..." : "Save Settings"}
-        </Button>
-      </Box>
-
-      {/* Reset Confirmation Dialog */}
-      <Dialog open={resetDialog} onClose={() => setResetDialog(false)}>
-        <DialogTitle>Reset Settings</DialogTitle>
-        <DialogContent>
-          <Box display="flex" alignItems="center" mb={2}>
-            <Warning sx={{ mr: 2, color: "warning.main" }} />
-            <Typography>
-              Are you sure you want to reset all settings to their default values? This action cannot be undone.
-            </Typography>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setResetDialog(false)}>Cancel</Button>
-          <Button onClick={handleResetSettings} color="warning" variant="contained">
-            Reset Settings
-          </Button>
-        </DialogActions>
-      </Dialog>
     </div>
   )
 }

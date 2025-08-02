@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   Box,
   Card,
@@ -17,139 +17,164 @@ import {
   Chip,
   IconButton,
   CircularProgress,
-} from "@mui/material";
-import { ArrowBack, AttachFile, Delete, Send } from "@mui/icons-material";
-import { useAuth } from "../../contexts/AuthContext";
-import { useNotification } from "../../contexts/NotificationContext";
-import api from "../../services/api";
-import "./CreateTicket.css";
+} from "@mui/material"
+import { ArrowBack, AttachFile, Delete, Send } from "@mui/icons-material"
+import { useAuth } from "../../contexts/AuthContext"
+import { useNotification } from "../../contexts/NotificationContext"
+import api from "../../services/api"
+import "./CreateTicket.css"
 
 const CreateTicket = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const { showSnackbar } = useNotification();
+  const navigate = useNavigate()
+  const { user } = useAuth()
+  const { showSnackbar } = useNotification()
 
   const [formData, setFormData] = useState({
     subject: "",
     description: "",
     category: "",
     priority: "medium",
-  });
-  const [categories, setCategories] = useState([]);
-  const [attachments, setAttachments] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
+  })
+  const [categories, setCategories] = useState([])
+  const [attachments, setAttachments] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    fetchCategories()
+  }, [])
 
   const fetchCategories = async () => {
     try {
-      const response = await api.get("/categories");
-      setCategories(response.data.categories);
+      const response = await api.get("/categories")
+      setCategories(response.data.categories)
     } catch (error) {
-      showSnackbar("Failed to fetch categories", "error");
+      showSnackbar("Failed to fetch categories", "error")
     }
-  };
+  }
 
   const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }))
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: "" }))
     }
-  };
+  }
 
   const handleFileChange = (event) => {
-    const files = Array.from(event.target.files);
+    const files = Array.from(event.target.files)
     const validFiles = files.filter((file) => {
-      const maxSize = 10 * 1024 * 1024; // 10MB
+      const maxSize = 10 * 1024 * 1024 // 10MB
       if (file.size > maxSize) {
-        showSnackbar(
-          `File ${file.name} is too large. Maximum size is 10MB.`,
-          "error"
-        );
-        return false;
+        showSnackbar(`File ${file.name} is too large. Maximum size is 10MB.`, "error")
+        return false
       }
-      return true;
-    });
-    setAttachments((prev) => [...prev, ...validFiles]);
-  };
+      return true
+    })
+    setAttachments((prev) => [...prev, ...validFiles])
+  }
 
   const removeAttachment = (index) => {
-    setAttachments((prev) => prev.filter((_, i) => i !== index));
-  };
+    setAttachments((prev) => prev.filter((_, i) => i !== index))
+  }
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors = {}
 
     if (!formData.subject.trim()) {
-      newErrors.subject = "Subject is required";
+      newErrors.subject = "Subject is required"
     }
 
     if (!formData.description.trim()) {
-      newErrors.description = "Description is required";
+      newErrors.description = "Description is required"
     }
 
     if (!formData.category) {
-      newErrors.category = "Category is required";
+      newErrors.category = "Category is required"
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!validateForm()) {
-      showSnackbar("Please fill in all required fields", "error");
-      return;
+      showSnackbar("Please fill in all required fields", "error")
+      return
     }
 
     try {
-      setLoading(true);
+      setLoading(true)
 
-      const submitData = new FormData();
-      submitData.append("subject", formData.subject);
-      submitData.append("description", formData.description);
-      submitData.append("category", formData.category);
-      submitData.append("priority", formData.priority);
+      console.log("Submitting form data:", {
+        subject: formData.subject,
+        description: formData.description,
+        category: formData.category,
+        priority: formData.priority,
+        attachmentsCount: attachments.length,
+      })
 
-      attachments.forEach((file) => {
-        submitData.append("attachments", file);
-      });
+      const submitData = new FormData()
+
+      // Ensure all required fields are properly set
+      submitData.append("subject", formData.subject.trim())
+      submitData.append("description", formData.description.trim())
+      submitData.append("category", formData.category)
+      submitData.append("priority", formData.priority)
+
+      // Add attachments
+      attachments.forEach((file, index) => {
+        submitData.append("attachments", file)
+        console.log(`Attachment ${index}:`, file.name, file.size)
+      })
+
+      // Debug: Log FormData contents
+      console.log("FormData contents:")
+      for (const [key, value] of submitData.entries()) {
+        console.log(key, value)
+      }
 
       const response = await api.post("/tickets", submitData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
 
-      showSnackbar("Ticket created successfully!", "success");
-      navigate(`/tickets/${response.data.ticket._id}`);
+      console.log("Ticket creation response:", response.data)
+      showSnackbar("Ticket created successfully!", "success")
+      navigate(`/tickets/${response.data.ticket._id}`)
     } catch (error) {
-      showSnackbar(
-        error.response?.data?.message || "Failed to create ticket",
-        "error"
-      );
+      console.error("Ticket creation error:", error)
+      console.error("Error response:", error.response?.data)
+
+      const errorMessage = error.response?.data?.message || "Failed to create ticket"
+      const errors = error.response?.data?.errors
+
+      if (errors && Array.isArray(errors)) {
+        showSnackbar(`${errorMessage}: ${errors.join(", ")}`, "error")
+      } else {
+        showSnackbar(errorMessage, "error")
+      }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "urgent":
-        return "error";
+        return "error"
       case "high":
-        return "warning";
+        return "warning"
       case "medium":
-        return "info";
+        return "info"
       case "low":
-        return "success";
+        return "success"
       default:
-        return "default";
+        return "default"
     }
-  };
+  }
 
   return (
     <div className="create-ticket-container">
@@ -159,11 +184,7 @@ const CreateTicket = () => {
           <ArrowBack />
         </IconButton>
         <Box>
-          <Typography
-            variant="h4"
-            component="h1"
-            sx={{ fontWeight: "bold", color: "primary.main" }}
-          >
+          <Typography variant="h4" component="h1" sx={{ fontWeight: "bold", color: "primary.main" }}>
             Create New Ticket
           </Typography>
           <Typography variant="body1" color="text.secondary">
@@ -186,9 +207,7 @@ const CreateTicket = () => {
                       label="Subject"
                       placeholder="Brief description of your issue"
                       value={formData.subject}
-                      onChange={(e) =>
-                        handleInputChange("subject", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("subject", e.target.value)}
                       error={!!errors.subject}
                       helperText={errors.subject}
                       required
@@ -207,9 +226,7 @@ const CreateTicket = () => {
                       <Select
                         value={formData.category}
                         label="Category"
-                        onChange={(e) =>
-                          handleInputChange("category", e.target.value)
-                        }
+                        onChange={(e) => handleInputChange("category", e.target.value)}
                         sx={{ borderRadius: 2 }}
                       >
                         {categories.map((category) => (
@@ -229,11 +246,7 @@ const CreateTicket = () => {
                         ))}
                       </Select>
                       {errors.category && (
-                        <Typography
-                          variant="caption"
-                          color="error"
-                          sx={{ mt: 0.5, ml: 1.5 }}
-                        >
+                        <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
                           {errors.category}
                         </Typography>
                       )}
@@ -246,45 +259,23 @@ const CreateTicket = () => {
                       <Select
                         value={formData.priority}
                         label="Priority"
-                        onChange={(e) =>
-                          handleInputChange("priority", e.target.value)
-                        }
+                        onChange={(e) => handleInputChange("priority", e.target.value)}
                         sx={{ borderRadius: 2 }}
                       >
                         <MenuItem value="low">
-                          <Chip
-                            label="Low"
-                            color="success"
-                            size="small"
-                            sx={{ mr: 1 }}
-                          />
+                          <Chip label="Low" color="success" size="small" sx={{ mr: 1 }} />
                           Low Priority
                         </MenuItem>
                         <MenuItem value="medium">
-                          <Chip
-                            label="Medium"
-                            color="info"
-                            size="small"
-                            sx={{ mr: 1 }}
-                          />
+                          <Chip label="Medium" color="info" size="small" sx={{ mr: 1 }} />
                           Medium Priority
                         </MenuItem>
                         <MenuItem value="high">
-                          <Chip
-                            label="High"
-                            color="warning"
-                            size="small"
-                            sx={{ mr: 1 }}
-                          />
+                          <Chip label="High" color="warning" size="small" sx={{ mr: 1 }} />
                           High Priority
                         </MenuItem>
                         <MenuItem value="urgent">
-                          <Chip
-                            label="Urgent"
-                            color="error"
-                            size="small"
-                            sx={{ mr: 1 }}
-                          />
+                          <Chip label="Urgent" color="error" size="small" sx={{ mr: 1 }} />
                           Urgent Priority
                         </MenuItem>
                       </Select>
@@ -300,13 +291,10 @@ const CreateTicket = () => {
                       multiline
                       rows={6}
                       value={formData.description}
-                      onChange={(e) =>
-                        handleInputChange("description", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("description", e.target.value)}
                       error={!!errors.description}
                       helperText={
-                        errors.description ||
-                        "Be as specific as possible to help us resolve your issue quickly"
+                        errors.description || "Be as specific as possible to help us resolve your issue quickly"
                       }
                       required
                       sx={{
@@ -320,20 +308,11 @@ const CreateTicket = () => {
                   {/* File Attachments */}
                   <Grid item xs={12}>
                     <Box>
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        sx={{ fontWeight: "bold" }}
-                      >
+                      <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
                         Attachments
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 2 }}
-                      >
-                        Upload files to help explain your issue (Max 10MB per
-                        file)
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Upload files to help explain your issue (Max 10MB per file)
                       </Typography>
 
                       <input
@@ -363,22 +342,14 @@ const CreateTicket = () => {
 
                       {attachments.length > 0 && (
                         <Box>
-                          <Typography
-                            variant="subtitle2"
-                            gutterBottom
-                            sx={{ fontWeight: "bold" }}
-                          >
+                          <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: "bold" }}>
                             Selected Files:
                           </Typography>
                           <Box display="flex" flexWrap="wrap" gap={1}>
                             {attachments.map((file, index) => (
                               <Chip
                                 key={index}
-                                label={`${file.name} (${(
-                                  file.size /
-                                  1024 /
-                                  1024
-                                ).toFixed(2)} MB)`}
+                                label={`${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`}
                                 onDelete={() => removeAttachment(index)}
                                 deleteIcon={<Delete />}
                                 variant="outlined"
@@ -394,29 +365,21 @@ const CreateTicket = () => {
                   {/* Submit Button */}
                   <Grid item xs={12}>
                     <Box display="flex" justifyContent="flex-end" gap={2}>
-                      <Button
-                        variant="outlined"
-                        onClick={() => navigate("/tickets")}
-                        sx={{ borderRadius: 2, px: 3 }}
-                      >
+                      <Button variant="outlined" onClick={() => navigate("/tickets")} sx={{ borderRadius: 2, px: 3 }}>
                         Cancel
                       </Button>
                       <Button
                         type="submit"
                         variant="contained"
-                        startIcon={
-                          loading ? <CircularProgress size={20} /> : <Send />
-                        }
+                        startIcon={loading ? <CircularProgress size={20} /> : <Send />}
                         disabled={loading}
                         sx={{
                           borderRadius: 2,
                           px: 4,
                           py: 1.5,
-                          background:
-                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                           "&:hover": {
-                            background:
-                              "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)",
+                            background: "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)",
                           },
                         }}
                       >
@@ -435,11 +398,7 @@ const CreateTicket = () => {
           {/* Tips */}
           <Card sx={{ mb: 3, borderRadius: 3 }}>
             <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ fontWeight: "bold", color: "primary.main" }}
-              >
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold", color: "primary.main" }}>
                 💡 Tips for Better Support
               </Typography>
               <Box component="ul" sx={{ pl: 2, m: 0 }}>
@@ -465,57 +424,25 @@ const CreateTicket = () => {
           {/* Priority Guide */}
           <Card sx={{ borderRadius: 3 }}>
             <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ fontWeight: "bold", color: "primary.main" }}
-              >
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold", color: "primary.main" }}>
                 🚨 Priority Levels
               </Typography>
               <Box>
                 <Box display="flex" alignItems="center" mb={2}>
-                  <Chip
-                    label="Urgent"
-                    color="error"
-                    size="small"
-                    sx={{ mr: 2, minWidth: 70 }}
-                  />
-                  <Typography variant="body2">
-                    System down, critical business impact
-                  </Typography>
+                  <Chip label="Urgent" color="error" size="small" sx={{ mr: 2, minWidth: 70 }} />
+                  <Typography variant="body2">System down, critical business impact</Typography>
                 </Box>
                 <Box display="flex" alignItems="center" mb={2}>
-                  <Chip
-                    label="High"
-                    color="warning"
-                    size="small"
-                    sx={{ mr: 2, minWidth: 70 }}
-                  />
-                  <Typography variant="body2">
-                    Significant impact, needs quick resolution
-                  </Typography>
+                  <Chip label="High" color="warning" size="small" sx={{ mr: 2, minWidth: 70 }} />
+                  <Typography variant="body2">Significant impact, needs quick resolution</Typography>
                 </Box>
                 <Box display="flex" alignItems="center" mb={2}>
-                  <Chip
-                    label="Medium"
-                    color="info"
-                    size="small"
-                    sx={{ mr: 2, minWidth: 70 }}
-                  />
-                  <Typography variant="body2">
-                    Normal business impact, standard timeline
-                  </Typography>
+                  <Chip label="Medium" color="info" size="small" sx={{ mr: 2, minWidth: 70 }} />
+                  <Typography variant="body2">Normal business impact, standard timeline</Typography>
                 </Box>
                 <Box display="flex" alignItems="center">
-                  <Chip
-                    label="Low"
-                    color="success"
-                    size="small"
-                    sx={{ mr: 2, minWidth: 70 }}
-                  />
-                  <Typography variant="body2">
-                    Minor issue, can wait for resolution
-                  </Typography>
+                  <Chip label="Low" color="success" size="small" sx={{ mr: 2, minWidth: 70 }} />
+                  <Typography variant="body2">Minor issue, can wait for resolution</Typography>
                 </Box>
               </Box>
             </CardContent>
@@ -523,7 +450,7 @@ const CreateTicket = () => {
         </Grid>
       </Grid>
     </div>
-  );
-};
+  )
+}
 
-export default CreateTicket;
+export default CreateTicket

@@ -5,6 +5,7 @@ import { Grid, Card, CardContent, Typography, Box, Paper, CircularProgress, Chip
 import { ConfirmationNumber, Assignment, CheckCircle, People } from "@mui/icons-material"
 import { useAuth } from "../../contexts/AuthContext"
 import api from "../../services/api"
+import AgentDashboard from "./AgentDashboard"
 import "./Dashboard.css"
 
 const Dashboard = () => {
@@ -33,6 +34,23 @@ const Dashboard = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Show agent dashboard for agents and admins
+  if (user?.role === "agent" || user?.role === "admin") {
+    return (
+      <div className="dashboard-container">
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: "bold", color: "primary.main" }}>
+            Agent Dashboard
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Manage and respond to support tickets
+          </Typography>
+        </Box>
+        <AgentDashboard />
+      </div>
+    )
   }
 
   const getStatusColor = (status) => {

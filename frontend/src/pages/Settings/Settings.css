@@ -2,6 +2,30 @@
   padding: 24px;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: calc(100vh - 64px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.settings-container .MuiCard-root {
+  transition: all 0.3s ease;
+}
+
+.settings-container .MuiCard-root:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.settings-container .MuiFormControlLabel-root {
+  margin: 0;
+  padding: 8px 0;
+}
+
+.settings-container .MuiSwitch-root {
+  margin-left: auto;
+}
+
+.settings-container .MuiAlert-root {
+  border-radius: 12px;
 }
 
 .settings-card {
@@ -14,7 +38,7 @@
 }
 
 .settings-section {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .section-header {
@@ -43,8 +67,13 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.setting-item:last-child {
-  margin-bottom: 0;
+.user-avatar {
+  width: 80px !important;
+  height: 80px !important;
+  font-size: 1.5rem !important;
+  margin: 0 auto 16px auto;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
 }
 
 .save-button {
@@ -63,43 +92,11 @@
   transform: translateY(-2px);
 }
 
-.save-button:disabled {
-  background: #ccc;
-  box-shadow: none;
-  transform: none;
-}
-
-.reset-button {
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-weight: bold;
-  text-transform: none;
-  transition: all 0.3s ease;
-}
-
-.reset-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.account-info-card {
-  background: rgba(248, 249, 250, 0.8);
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.account-info-card:hover {
-  background: rgba(248, 249, 250, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.changes-alert {
-  background: rgba(33, 150, 243, 0.1);
-  border: 1px solid rgba(33, 150, 243, 0.3);
-  border-radius: 12px;
-  margin-bottom: 24px;
+.tips-panel {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(33, 150, 243, 0.2);
 }
 
 @media (max-width: 768px) {
@@ -112,50 +109,17 @@
     padding: 16px !important;
   }
 
+  .user-avatar {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 1.25rem !important;
+  }
+
   .section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-
-  .setting-item {
-    padding: 12px;
-  }
-
-  .account-info-card {
-    padding: 16px;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.settings-card {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-.settings-card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.settings-card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.settings-card:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-.settings-card:nth-child(4) {
-  animation-delay: 0.4s;
 }
 
 /* Switch customization */
@@ -196,23 +160,33 @@
   transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
-/* Form field styling */
-.settings-field .MuiOutlinedInput-root {
-  border-radius: 12px;
-  transition: all 0.3s ease;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.settings-field .MuiOutlinedInput-root:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.settings-card {
+  animation: fadeInUp 0.6s ease-out;
 }
 
-.settings-field .MuiOutlinedInput-root.Mui-focused {
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+.settings-card:nth-child(1) {
+  animation-delay: 0.1s;
 }
 
-/* Dialog styling */
-.reset-dialog .MuiDialog-paper {
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+.settings-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.settings-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.settings-card:nth-child(4) {
+  animation-delay: 0.4s;
 }

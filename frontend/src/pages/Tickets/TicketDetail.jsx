@@ -354,51 +354,53 @@ const TicketDetail = () => {
               </List>
 
               {/* Add Comment */}
-              <Box mt={3}>
-                <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: "bold" }}>
-                  Add Comment
-                </Typography>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={4}
-                  placeholder="Write your comment..."
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  sx={{ mb: 2 }}
-                />
-                <Box display="flex" justifyContent="space-between" alignItems="center">
-                  <Box>
-                    <input
-                      accept="*/*"
-                      style={{ display: "none" }}
-                      id="comment-file-upload"
-                      multiple
-                      type="file"
-                      onChange={handleFileChange}
-                    />
-                    <label htmlFor="comment-file-upload">
-                      <Button variant="outlined" component="span" startIcon={<AttachFile />} sx={{ mr: 1 }}>
-                        Attach Files
-                      </Button>
-                    </label>
-                    {commentFiles.length > 0 && (
-                      <Typography variant="caption" color="text.secondary">
-                        {commentFiles.length} file(s) selected
-                      </Typography>
-                    )}
+              {(user?.role !== "user" || ticket.createdBy._id === user?.id) && (
+                <Box mt={3}>
+                  <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: "bold" }}>
+                    Add Comment
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={4}
+                    placeholder="Write your comment..."
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    sx={{ mb: 2 }}
+                  />
+                  <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Box>
+                      <input
+                        accept="*/*"
+                        style={{ display: "none" }}
+                        id="comment-file-upload"
+                        multiple
+                        type="file"
+                        onChange={handleFileChange}
+                      />
+                      <label htmlFor="comment-file-upload">
+                        <Button variant="outlined" component="span" startIcon={<AttachFile />} sx={{ mr: 1 }}>
+                          Attach Files
+                        </Button>
+                      </label>
+                      {commentFiles.length > 0 && (
+                        <Typography variant="caption" color="text.secondary">
+                          {commentFiles.length} file(s) selected
+                        </Typography>
+                      )}
+                    </Box>
+                    <Button
+                      variant="contained"
+                      startIcon={<Send />}
+                      onClick={handleAddComment}
+                      disabled={!commentText.trim() || submittingComment}
+                      sx={{ borderRadius: 2 }}
+                    >
+                      {submittingComment ? <CircularProgress size={20} /> : "Add Comment"}
+                    </Button>
                   </Box>
-                  <Button
-                    variant="contained"
-                    startIcon={<Send />}
-                    onClick={handleAddComment}
-                    disabled={!commentText.trim() || submittingComment}
-                    sx={{ borderRadius: 2 }}
-                  >
-                    {submittingComment ? <CircularProgress size={20} /> : "Add Comment"}
-                  </Button>
                 </Box>
-              </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>
