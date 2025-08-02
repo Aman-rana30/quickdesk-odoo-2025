@@ -2,9 +2,6 @@
 
 A comprehensive, full-stack help desk and ticketing system built with React.js, Node.js, Express, and MongoDB. QuickDesk provides a modern, intuitive interface for managing customer support tickets with real-time notifications, file attachments, and administrative controls.
 
-![QuickDesk Dashboard](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
-![Version](https://img.shields.io/badge/Version-1.0.0-blue)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## 🌟 Features
 
